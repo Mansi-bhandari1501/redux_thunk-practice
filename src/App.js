@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
+import { useEffect } from 'react';
+import { fetchContent } from './slices/contentSlice';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+    dispatch(fetchContent());
+  },[dispatch])
+
+  const contents= useSelector((state)=>state.content.contents);
+  const isLoading= useSelector((state)=> state.content.isLoading);
+  const error= useSelector((state)=> state.content.error);
+
+  if(isLoading){
+    return 'isLoading..';
+  }
+  if(error){
+    return error;
+  }
+
+  return(
+    <div>
+      {contents.map((content)=>(
+        <div key ={content.id}>
+          <img 
+          src={`${content.thumbnailUrl}`}
+          alt={`${content.title}`}
+          />
+        </div>
+      ))}
     </div>
-  );
+  )
 }
 
 export default App;
